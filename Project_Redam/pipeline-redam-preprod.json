@@ -1,0 +1,77 @@
+{
+   "pipeline": {
+      "roleArn": "arn:aws:iam::237069775380:role/service-role/AWSCodePipelineServiceRole-us-east-1-pipeline-redam",
+      "stages": [
+         {
+            "name": "Source",
+            "actions": [
+               {
+                 "name": "Source",
+                  "actionTypeId": {
+                      "category": "Source",
+                      "owner": "AWS",
+                      "provider": "CodeCommit",
+                      "version": "1"
+                },
+                  "runOrder": 1,
+                  "roleArn": "arn:aws:iam::037243314518:role/Role-CrossAccount",
+                  "configuration": {
+                      "BranchName": "preprod",
+                      "PollForSourceChanges": "false",
+                      "RepositoryName": "front-redam"
+                   },
+                   "outputArtifacts": [
+                     {
+                       "name": "SourceArtifact"
+                     }
+                   ],
+                   "inputArtifacts": []
+              }
+           ]
+        },
+        {
+            "name": "Build",
+            "actions": [
+              {
+                "inputArtifacts": [
+                 {
+                     "name": "SourceArtifact"
+                  }
+                ],
+                 "name": "Build",
+                 "region": "us-east-1",
+                 "namespace": "BuildVariables",
+                 "actionTypeId": {
+                     "category": "Build",
+                     "owner": "AWS",
+                     "version": "1",
+                     "provider": "CodeBuild"
+                  },
+                  "outputArtifacts": [
+                     {
+                        "name": "BuildArtifact"
+                     }
+                  ],
+                  "configuration": {
+                     "ProjectName": "codebuild-apiredam"
+                   },
+                   "runOrder": 1
+               }
+            ]
+         }
+       ],
+       "artifactStore": {
+         "type": "S3",
+         "location": "redampreprod",
+         "encryptionKey": {
+            "id": "arn:aws:kms:us-east-1:237069775380:key/a8e0e3d9-6f40-4f23-8c2e-8c5dab10cdd5",
+            "type": "KMS"
+          }
+        },
+        "name": "pipeline-redam-front-preprod",
+        "version": 1
+     }
+ }
+
+
+ aws codepipeline create-pipeline --cli-input-json file://pipeline.json --profile preprod --region us-east-1

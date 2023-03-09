@@ -1,0 +1,10 @@
+{
+  "source": ["aws.codecommit"],
+  "detail-type": ["CodeCommit Repository State Change"],
+  "resources": ["arn:aws:codecommit:us-east-1:037243314518:front-redam"],
+  "detail": {
+    "event": ["referenceCreated", "referenceUpdated"],
+    "referenceType": ["branch"],
+    "referenceName": ["preprod"]
+  }
+}
